@@ -45,4 +45,24 @@ Okay, now we can add the @chans attribute to tri~, which lets us specify how man
 "harmonic 1 55"
 "deviate 50 330"
 
-What do they sound like? Each of these creates a different distribution of frequencies 
+What do they sound like? Each of these creates a different distribution of frequencies, and those frequency relationships can be pleasing, disturbing, buzzy, etc. Using the kslider, along with the dollar notation, we can make a kind of instrument like this. We can even use it to make some drone microcompositions.
+
+## From drones to voices
+
+One thing that's actually been kind of tricky in previous versions of Max is something called voice allocation. There are a couple of new objects that work with MC to try to address this, and they're called mc.voiceallocator~ and mc.noteallocator~.
+
+Let's look specifically at mc.voiceallocator~. If you send it a bang message, you'll notice that the rightmost outlet of this object sends out a number whenever it gets a message. This "round robin" number can be used with MC objects to make sure that each message goes to a different object.
+
+Before we get into that, let's use something called the line~ object to make an envelope for our sound. Let's make an mc.tri~ @chans 8 and an mc.line~ @chans 8. Add in a multiply to multiply the envelope by the cycle~. If you've never seen something like this before, it's a super classic way to model sound. You've got a generator, and you shape it with an envelope, similar to what might happen if you had a piano, for example.
+
+As you'll notice, this doesn't let us play more than one note at a time. You'll notice that it actually causes every voice to fire at once. We can use the target message to make just one voice fire. Finally, we can use mc.voiceallocator~ to create a round-robin for our voices. This in conjunction with "target $1" lets us build a poloyphonic instrument.
+
+## Neat sound design
+
+Okay, now I just want to show you another neat way that you can use some of this stuff. Of course, you don't have to use synthesized sounds with Max, you can also use recorded samples. There are a few different ways to do this, but a pretty typical one is to use groove~ and buffer~.
+
+Start by copying the typical multichannel output that we had before. Next, let's make an object called buffer~. This is the object that will hold onto our audio. Buffer~ gets a name, which other objects can use to refer to it. Call this one "buffer~ snd1" or something. Next, connect a message box up to this buffer with contents like "replace anton.aif". This will fill the contents of the buffer with the audio file "anton.aif". You can also send the replace message with nothing after it to get a dialog that will let you replace the buffer contents with whatever you like.
+
+Okay, let's actually hear the contents of that buffer. We can use the groove~ object for this. It takes the name of the buffer as its first argument. It takes a sig~ as input as well to set the speed of playback. So if you send sig~ 1 then it will play back at normal speed. 2 gives you double speed, and -0.5 will play backwards at half speed.
+
+So let's put a couple pieces of knowledge together. We can use sig~ in conjunction with harmonize and deviate to play back sounds with a whole bunch of different speeds at once. Depending on the exact settings that we use here, and the particular audio file that we choose, we can get a whole bunch of interesting sounds and rich textures (particularly if we turn on looping).
